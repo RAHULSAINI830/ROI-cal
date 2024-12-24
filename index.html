@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e8f5e9;
+            border: 1px solid #4CAF50;
+            border-radius: 10px;
+        }
+
+        .results h2 {
+            color: #333;
+        }
+
+        .results p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ROI Calculator</h1>
+        <form id="roiForm">
+            <!-- Company Information -->
+            <label for="inspectors">Number of Inspectors</label>
+            <input type="number" id="inspectors" placeholder="Enter number of inspectors" required>
+
+            <label for="hourlyRate">Inspector Hourly Rate ($)</label>
+            <input type="number" id="hourlyRate" placeholder="Enter hourly rate per inspector" required>
+
+            <!-- Operational Metrics -->
+            <label for="inspectionsPerWeek">Inspections per Week</label>
+            <input type="number" id="inspectionsPerWeek" placeholder="Enter number of inspections per week" required>
+
+            <label for="timePerInspection">Average Time per Inspection (hours)</label>
+            <input type="number" id="timePerInspection" placeholder="Enter time per inspection in hours" required>
+
+            <label for="reportTime">Report Creation Time per Week (hours)</label>
+            <input type="number" id="reportTime" placeholder="Enter weekly report creation time" required>
+
+            <!-- Compliance Metrics -->
+            <label for="followUpPercentage">Follow-Up Percentage (%)</label>
+            <input type="number" id="followUpPercentage" placeholder="Enter percentage of follow-ups" required>
+
+            <label for="penaltyCosts">Monthly Penalty Costs ($)</label>
+            <input type="number" id="penaltyCosts" placeholder="Enter penalty costs" required>
+
+            <!-- Administrative Costs -->
+            <label for="softwareCosts">Software Costs ($)</label>
+            <input type="number" id="softwareCosts" placeholder="Enter software costs" required>
+
+            <label for="adminHours">Admin Hours per Week</label>
+            <input type="number" id="adminHours" placeholder="Enter admin hours per week" required>
+
+            <label for="adminHourlyRate">Admin Hourly Rate ($)</label>
+            <input type="number" id="adminHourlyRate" placeholder="Enter admin hourly rate" required>
+
+            <!-- Revenue Metrics -->
+            <label for="revenuePerInspection">Revenue per Inspection ($)</label>
+            <input type="number" id="revenuePerInspection" placeholder="Enter revenue per inspection" required>
+
+            <button type="button" onclick="calculateROI()">Calculate ROI</button>
+        </form>
+
+        <div class="results" id="results" style="display:none;">
+            <h2>Results</h2>
+            <p id="timeSavings"></p>
+            <p id="revenueOpportunities"></p>
+            <p id="costSavings"></p>
+            <p id="totalSavings"></p>
+        </div>
+    </div>
+
+    <script>
+        function calculateROI() {
+            const inspectors = parseFloat(document.getElementById('inspectors').value);
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+            const inspectionsPerWeek = parseFloat(document.getElementById('inspectionsPerWeek').value);
+            const timePerInspection = parseFloat(document.getElementById('timePerInspection').value);
+            const reportTime = parseFloat(document.getElementById('reportTime').value);
+            const followUpPercentage = parseFloat(document.getElementById('followUpPercentage').value) / 100;
+            const penaltyCosts = parseFloat(document.getElementById('penaltyCosts').value);
+            const softwareCosts = parseFloat(document.getElementById('softwareCosts').value);
+            const adminHours = parseFloat(document.getElementById('adminHours').value);
+            const adminHourlyRate = parseFloat(document.getElementById('adminHourlyRate').value);
+            const revenuePerInspection = parseFloat(document.getElementById('revenuePerInspection').value);
+
+            // Time Savings
+            const inspectionTimeSavedWeekly = inspectionsPerWeek * timePerInspection * 0.4;
+            const reportTimeSavedWeekly = reportTime * 0.7;
+            const totalTimeSavedMonthly = (inspectionTimeSavedWeekly + reportTimeSavedWeekly) * 4;
+
+            // Revenue Opportunities
+            const additionalInspectionsMonthly = totalTimeSavedMonthly / timePerInspection;
+            const revenueFromAdditionalInspections = additionalInspectionsMonthly * revenuePerInspection;
+
+            // Cost Savings
+            const adminCostSavings = adminHours * 4 * adminHourlyRate;
+            const penaltyAvoidance = penaltyCosts * 0.8;
+
+            // Total Savings
+            const totalSavings = revenueFromAdditionalInspections + adminCostSavings + penaltyAvoidance;
+
+            // Update UI
+            document.getElementById('timeSavings').innerText = `Time Savings: ${totalTimeSavedMonthly.toFixed(2)} hours/month.`;
+            document.getElementById('revenueOpportunities').innerText = `Revenue Opportunities: $${revenueFromAdditionalInspections.toFixed(2)} /month.`;
+            document.getElementById('costSavings').innerText = `Cost Savings: $${(adminCostSavings + penaltyAvoidance).toFixed(2)} /month.`;
+            document.getElementById('totalSavings').innerText = `Total Monthly Savings: $${totalSavings.toFixed(2)}.`;
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
